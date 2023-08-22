@@ -1,0 +1,44 @@
+import copy
+import random
+# Consider using the modules imported above.
+
+class Hat:
+  def __init__(self, **kwargs):
+    self.contents = list()
+    for ball in kwargs:
+      num = kwargs[ball]
+      for idx in range(num):
+        self.contents.append(ball)
+      
+  def draw(self, num):
+    if num > len(self.contents):
+      return self.contents
+    else:
+      draw = random.sample(self.contents, num)
+      for ball in draw:
+        self.contents.remove(ball)
+      return draw
+
+def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
+  correct_count = 0
+  for exp in range(num_experiments):
+    exp_hat = copy.deepcopy(hat)
+    ball_count = {}
+    draw = exp_hat.draw(num_balls_drawn)
+    correct = True
+    for ball in draw:
+      if ball in ball_count:
+        ball_count[ball] += 1
+      else:
+        ball_count[ball] = 1
+    for ball in expected_balls:
+      expected_count = expected_balls[ball]
+      if ball in ball_count:
+        actual_count = ball_count[ball]
+      else:
+        actual_count = 0
+      if expected_count > actual_count:
+        correct = False
+    if correct:
+      correct_count += 1
+  return correct_count / num_experiments
